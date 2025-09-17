@@ -49,24 +49,46 @@ namespace SpendSmart.Controllers
             _context.SaveChanges();
             return RedirectToAction("Expenses");
         }
-        
+
+        [HttpPost]
         public IActionResult CreateEditExpenseForm(Expense model)
         {
-            if(model.Id == 0)
+            if (model.Id == 0)
             {
-                //Create
-                _context.Expenses.Add(model);
+                // Generate automatic serial number
+                model.SerialNumber = Guid.NewGuid().ToString("N").Substring(0, 12).ToUpper();
 
-            }else
+                _context.Expenses.Add(model);
+            }
+            else
             {
-                //Editing
-                _context.Expenses.Update (model);
+                // Don’t overwrite serial number when editing
+                var existingExpense = _context.Expenses.Find(model.Id);
+                if (existingExpense != null)
+                {
+                    existingExpense.Value = model.Value;
+                    existingExpense.Description = model.Description;
+                    existingExpense.Color = model.Color;
+                    existingExpense.Quantity= model.Quantity;
+                    existingExpense.Size = model.Size;
+                    // Keep existingExpense.SerialNumber
+                }
             }
 
-                _context.SaveChanges();
-
+            _context.SaveChanges();
             return RedirectToAction("Expenses");
         }
+
+        public IActionResult Details(int id)
+        {
+            var expense = _context.Expenses.FirstOrDefault(e => e.Id == id);
+            if (expense == null)
+            {
+                return NotFound();
+            }
+            return View(expense);
+        }
+
 
         public IActionResult Privacy()
         {

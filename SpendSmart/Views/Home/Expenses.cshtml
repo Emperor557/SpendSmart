@@ -24,11 +24,13 @@
             {
                 <tr>
                     <td>@expense.Id</td>
-                    <td>@expense.Value</td> 
+                    <td>₦@expense.Value.ToString("N2")</td>
                     <td>@expense.Description</td>
                     <td>
-                        <a asp-action="CreateEditExpense" asp-route-id="@expense.Id">Edit</a>
-                        <a asp-action="DeleteExpense" asp-route-id="@expense.Id">Delete</a>
+                        <a asp-action="CreateEditExpense" asp-route-id="@expense.Id">Edit</a> |
+                        <a asp-action="DeleteExpense" asp-route-id="@expense.Id"
+                           onclick="return confirm('Are you sure you want to delete this expense?');">Delete</a> |
+                        <a asp-action="Details" asp-route-id="@expense.Id">Details</a>
                     </td>
                 </tr>
             }
